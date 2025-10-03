@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Faker\Factory as FakerFactory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -23,12 +24,26 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = FakerFactory::create('id_ID'); // Pake lokal Indonesia
+
+        $gender = $faker->randomElement(['Laki-laki', 'Perempuan']);
+        $name   = $gender == 'Laki-laki' ? $faker->firstNameMale() : $faker->firstNameFemale();
+        $lastName = $faker->lastName();
+
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'name' => $name . ' ' . $lastName,
+            'email' => strtolower(
+                str_replace(['.', ' ', '-'], '', $name) .
+                    '.' .
+                    str_replace(['.', ' ', '-'], '', $lastName) .
+                    $faker->unique()->numerify('##')
+            ) . '@gmail.com',
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => Hash::make('password'),
             'remember_token' => Str::random(10),
+            'role' => 'karyawan',
+            'phone' => $faker->unique()->numerify('08##########'),
+            'gender' => $gender,
         ];
     }
 
@@ -37,7 +52,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }

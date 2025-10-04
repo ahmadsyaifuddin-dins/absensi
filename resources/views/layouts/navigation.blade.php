@@ -13,27 +13,22 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    {{-- Link KHUSUS ADMIN --}}
+                    {{-- ================= MENU KHUSUS ADMIN ================= --}}
                     @if (Auth::user()->role === 'admin')
-                        <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                             {{ __('Manajemen Pengguna') }}
                         </x-nav-link>
-
-                        {{-- PLACEHOLDER Admin: Absensi, Karyawan, Laporan --}}
-                        <x-nav-link :href="'#'">
-                            {{ __('Absensi Harian') }}
+                        <x-nav-link :href="'#'" {{-- :href="route('reports.index')" :active="request()->routeIs('reports.*')" --}}>
+                            {{ __('Laporan Absensi') }}
                         </x-nav-link>
-                        <x-nav-link :href="'#'">
-                            {{ __('Laporan') }}
+                        <x-nav-link :href="'#'" {{-- :href="route('holidays.index')" :active="request()->routeIs('holidays.*')" --}}>
+                            {{ __('Hari Libur') }}
                         </x-nav-link>
                     @endif
 
-                    {{-- Link KHUSUS KARYAWAN --}}
+                    {{-- ================= MENU KHUSUS KARYAWAN ================= --}}
                     @if (Auth::user()->role === 'karyawan')
-                        <x-nav-link :href="'#'">
-                            {{ __('Absensi Saya') }}
-                        </x-nav-link>
-                        <x-nav-link :href="'#'">
+                        <x-nav-link :href="'#'" {{-- :href="route('attendance.index')" :active="request()->routeIs('attendance.*')" --}}>
                             {{ __('Riwayat Absensi') }}
                         </x-nav-link>
                     @endif
@@ -57,7 +52,6 @@
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
-
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <x-dropdown-link :href="route('logout')"
@@ -86,27 +80,26 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            
-            {{-- Link KHUSUS ADMIN RESPONSIVE --}}
+
+            {{-- ================= MENU KHUSUS ADMIN RESPONSIVE ================= --}}
             @if (Auth::user()->role === 'admin')
-                <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                     {{ __('Manajemen Pengguna') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="'#'">
-                    {{ __('Absensi Harian') }}
+                <x-responsive-nav-link :href="'#'" {{-- :href="route('reports.index')" :active="request()->routeIs('reports.*')" --}}>
+                    {{ __('Laporan Absensi') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="'#'" {{-- :href="route('holidays.index')" :active="request()->routeIs('holidays.*')" --}}>
+                    {{ __('Hari Libur') }}
                 </x-responsive-nav-link>
             @endif
 
-            {{-- Link KHUSUS KARYAWAN RESPONSIVE --}}
+            {{-- ================= MENU KHUSUS KARYAWAN RESPONSIVE ================= --}}
             @if (Auth::user()->role === 'karyawan')
-                <x-responsive-nav-link :href="'#'">
-                    {{ __('Absensi Saya') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="'#'">
+                <x-responsive-nav-link :href="'#'" {{-- :href="route('attendance.index')" :active="request()->routeIs('attendance.*')" --}}>
                     {{ __('Riwayat Absensi') }}
                 </x-responsive-nav-link>
             @endif
-
         </div>
 
         <div class="pt-4 pb-1 border-t border-gray-200">
@@ -119,13 +112,11 @@
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
-
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-
                     <x-responsive-nav-link :href="route('logout')"
                             onclick="event.preventDefault();
-                                            this.closest('form').submit();">
+                                        this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
                 </form>

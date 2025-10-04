@@ -10,12 +10,6 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function index()
-    {
-        $users = User::latest()->paginate(10);
-        return view('admin.users.index', compact('users'));
-    }
-
     public function create()
     {
         return view('admin.users.create');
@@ -43,7 +37,7 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil ditambahkan!');
     }
-    
+
     public function show(User $user)
     {
         return view('admin.users.show', compact('user'));
@@ -80,7 +74,7 @@ class UserController extends Controller
         if ($request->filled('password')) {
             $user->password = Hash::make($validated['password']);
         }
-        
+
         $user->save();
 
         return redirect()->route('admin.users.index')->with('success', 'Data pengguna berhasil diperbarui!');

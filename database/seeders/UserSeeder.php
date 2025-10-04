@@ -13,10 +13,10 @@ class UserSeeder extends Seeder
     {
         // Membuat 1 User Admin
         User::factory()->create([
-            'name' => 'Admin User',
+            'name' => 'Admin Utama',
             'email' => 'admin@gmail.com',
             'role' => 'admin',
-            'password' => Hash::make('admin123'),
+            'password' => Hash::make('password'),
         ]);
 
         // Membuat 1 User Karyawan untuk testing
@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
             'name' => 'Test Karyawan',
             'email' => 'karyawan@gmail.com',
             'role' => 'karyawan',
-            'password' => Hash::make('karyawan123'),
+            'password' => Hash::make('password'),
         ]);
 
         // Membuat 10 Karyawan dummy menggunakan factory

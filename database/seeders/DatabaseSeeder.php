@@ -14,10 +14,10 @@ class DatabaseSeeder extends Seeder
         // Membuat 1 User Admin
         // Kita tidak perlu membuat data employee untuk admin
         User::factory()->create([
-            'name' => 'Admin User',
+            'name' => 'Admin Utama',
             'email' => 'admin@gmail.com',
             'role' => 'admin',
-            'password' => Hash::make('admin123'),
+            'password' => Hash::make('password'),
         ]);
 
         // Membuat 1 User Karyawan untuk testing dengan data employee
@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Karyawan Test',
             'email' => 'karyawan@gmail.com',
             'role' => 'karyawan',
-            'password' => Hash::make('karyawan123'),
+            'password' => Hash::make('password'),
         ]);
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Holiday; // <-- Import model
 use Illuminate\Http\Request;
 
 class HolidayController extends Controller
@@ -11,15 +12,10 @@ class HolidayController extends Controller
      */
     public function index()
     {
-        //
-    }
+        // Ambil semua data hari libur, urutkan berdasarkan tanggal
+        $holidays = Holiday::orderBy('date', 'desc')->paginate(10);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return view('holidays.index', compact('holidays'));
     }
 
     /**
@@ -27,38 +23,31 @@ class HolidayController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        // Validasi input
+        $request->validate([
+            'date' => ['required', 'date', 'unique:holidays,date'],
+            'description' => ['required', 'string', 'max:255'],
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        // Buat data baru
+        Holiday::create([
+            'date' => $request->date,
+            'description' => $request->description,
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+        return redirect()->route('holidays.index')
+                         ->with('success', 'Hari libur berhasil ditambahkan.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Holiday $holiday)
     {
-        //
+        // Hapus data
+        $holiday->delete();
+
+        return redirect()->route('holidays.index')
+                         ->with('success', 'Hari libur berhasil dihapus.');
     }
 }

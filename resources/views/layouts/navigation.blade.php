@@ -21,8 +21,7 @@
                     <x-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')">
                         {{ __('Laporan Absensi') }}
                     </x-nav-link>
-                    <x-nav-link :href="'#'" {{-- :href="route('holidays.index')"
-                        :active="request()->routeIs('holidays.*')" --}}>
+                    <x-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.*')">
                         {{ __('Hari Libur') }}
                     </x-nav-link>
                     @endif
@@ -97,8 +96,7 @@
             <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')">
                 {{ __('Laporan Absensi') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="'#'" {{-- :href="route('holidays.index')"
-                :active="request()->routeIs('holidays.*')" --}}>
+            <x-responsive-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.*')">
                 {{ __('Hari Libur') }}
             </x-responsive-nav-link>
             @endif

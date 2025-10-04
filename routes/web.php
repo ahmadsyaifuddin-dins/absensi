@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController; // <-- Tambahkan ini di atas
+use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\ReportController;
 
 /*
@@ -39,6 +40,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Contoh: /users, /users/create, /users/{user}/edit, dll.
     Route::resource('users', UserController::class);
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index'); // <-- TAMBAHKAN INI
+
+    Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays.index');
+    Route::post('/holidays', [HolidayController::class, 'store'])->name('holidays.store');
+    Route::delete('/holidays/{holiday}', [HolidayController::class, 'destroy'])->name('holidays.destroy');
 
 });
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController; // <-- Tambahkan ini di atas
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Rute resource akan otomatis membuat semua URL CRUD untuk UserController
     // Contoh: /users, /users/create, /users/{user}/edit, dll.
     Route::resource('users', UserController::class);
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index'); // <-- TAMBAHKAN INI
+
 });
 
 

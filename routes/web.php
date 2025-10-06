@@ -27,11 +27,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // RUTE UNTUK ABSENSI
-    Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index'); // <-- TAMBAHKAN INI
+    Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
     Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clockin');
     Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clockout');
-
     Route::post('/attendance/permission', [AttendanceController::class, 'storePermission'])->name('attendance.store_permission');
+    
+    Route::get('/attendance/export/excel', [AttendanceController::class, 'exportMyHistoryExcel'])->name('attendance.export.excel');
+    Route::get('/attendance/export/pdf', [AttendanceController::class, 'exportMyHistoryPdf'])->name('attendance.export.pdf');
+
 });
 
 
@@ -43,14 +46,25 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     // RUTE BARU UNTUK LAPORAN HARIAN
     Route::get('/admin/reports/daily', [ReportController::class, 'dailyReport'])
-            ->name('admin.reports.daily');
+        ->name('admin.reports.daily');
 
     Route::post('/admin/attendance/mark-alpa', [AttendanceController::class, 'markAlpa'])
-    ->name('admin.attendance.mark_alpa');
-    
+        ->name('admin.attendance.mark_alpa');
+
     Route::resource('/admin/holidays', HolidayController::class)
-    ->except(['show']); // Method 'show' tidak kita gunakan
+        ->except(['show']); // Method 'show' tidak kita gunakan
+
+    // RUTE BARU UNTUK EXPORT EXCEL
+    Route::get('/admin/reports/daily/export', [ReportController::class, 'exportExcel'])
+        ->name('admin.reports.daily.export');
+
+    // RUTE BARU UNTUK LAPORAN BULANAN
+    Route::get('/admin/reports/monthly', [ReportController::class, 'monthlyReport'])
+        ->name('admin.reports.monthly');
+
+    Route::get('/admin/reports/monthly/export', [ReportController::class, 'exportMonthlyExcel'])
+        ->name('admin.reports.monthly.export');
 });
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -10,6 +10,18 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
 
+                    {{-- TOMBOL-TOMBOL EXPORT BARU --}}
+                    <div class="flex justify-end space-x-2 mb-4">
+                        <a href="{{ route('attendance.export.excel') }}"
+                            class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md">
+                            <i class="fas fa-file-excel mr-2"></i> Export Excel
+                        </a>
+                        <a href="{{ route('attendance.export.pdf') }}"
+                            class="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md">
+                            <i class="fas fa-file-pdf mr-2"></i> Export PDF
+                        </a>
+                    </div>
+
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -37,7 +49,8 @@
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @forelse ($attendances as $attendance)
                                 <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $loop->iteration + $attendances->firstItem() - 1 }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $loop->iteration +
+                                        $attendances->firstItem() - 1 }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $attendance->date }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $attendance->time_in }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $attendance->time_out }}</td>

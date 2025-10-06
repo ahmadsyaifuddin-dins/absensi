@@ -8,6 +8,9 @@ use App\Models\Holiday;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\MyAttendanceHistoryExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AttendanceController extends Controller
 {
@@ -225,5 +228,33 @@ class AttendanceController extends Controller
         }
 
         return redirect()->route('dashboard')->with('success', $absentEmployeeIds->count() . ' karyawan telah ditandai Alpa.');
+    }
+
+    public function exportMyHistoryExcel()
+    {
+        $userName = str_replace(' ', '-', Auth::user()->name);
+        $fileName = 'riwayat-absensi-' . $userName . '.xlsx';
+        return Excel::download(new MyAttendanceHistoryExport, $fileName);
+    }
+
+    public function exportMyHistoryPdf()
+    {
+        // 2. Ambil data yang dibutuhkan untuk view, sama seperti di class Export
+        $employee = Auth::user()->employee;
+        $attendances = Attendance::where('employee_id', $employee->id)
+            ->latest()
+            ->get();
+
+        // 3. Siapkan nama file
+        $userName = str_replace(' ', '-', Auth::user()->name);
+        $fileName = 'riwayat-absensi-' . $userName . '.pdf';
+
+        // 4. Load view dan data, lalu konversi ke PDF dan download
+        $pdf = Pdf::loadView('attendance.history_pdf', [
+            'attendances' => $attendances,
+            'employee' => $employee
+        ]);
+
+        return $pdf->download($fileName);
     }
 }

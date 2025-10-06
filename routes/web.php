@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\HolidayController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\AttendanceController;
@@ -31,10 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clockin');
     Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clockout');
     Route::post('/attendance/permission', [AttendanceController::class, 'storePermission'])->name('attendance.store_permission');
-    
+
     Route::get('/attendance/export/excel', [AttendanceController::class, 'exportMyHistoryExcel'])->name('attendance.export.excel');
     Route::get('/attendance/export/pdf', [AttendanceController::class, 'exportMyHistoryPdf'])->name('attendance.export.pdf');
-
 });
 
 
@@ -44,7 +44,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Contoh: /users, /users/create, /users/{user}/edit, dll.
     Route::resource('users', UserController::class);
 
-    // RUTE BARU UNTUK LAPORAN HARIAN
+    // === RUTE UNTUK MANAJEMEN DATA EMPLOYEE ===
+    Route::get('/users/{user}/employee/create', [EmployeeController::class, 'create'])->name('admin.employees.create');
+    Route::post('/users/{user}/employee', [EmployeeController::class, 'store'])->name('admin.employees.store');
+    Route::get('/users/{user}/employee/edit', [EmployeeController::class, 'edit'])->name('admin.employees.edit');
+    Route::put('/users/{user}/employee', [EmployeeController::class, 'update'])->name('admin.employees.update');
+
+
     Route::get('/admin/reports/daily', [ReportController::class, 'dailyReport'])
         ->name('admin.reports.daily');
 
@@ -54,11 +60,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('/admin/holidays', HolidayController::class)
         ->except(['show']); // Method 'show' tidak kita gunakan
 
-    // RUTE BARU UNTUK EXPORT EXCEL
     Route::get('/admin/reports/daily/export', [ReportController::class, 'exportExcel'])
         ->name('admin.reports.daily.export');
 
-    // RUTE BARU UNTUK LAPORAN BULANAN
     Route::get('/admin/reports/monthly', [ReportController::class, 'monthlyReport'])
         ->name('admin.reports.monthly');
 

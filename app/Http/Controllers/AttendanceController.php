@@ -193,6 +193,8 @@ class AttendanceController extends Controller
             return redirect()->route('dashboard')->with('info', 'Tidak ada tindakan yang diambil pada hari libur.');
         }
 
+        // nanti tambah untuk pengecekan hari libur perusahaan
+
         // 3. Dapatkan semua ID karyawan yang statusnya 'aktif'
         $activeEmployeeIds = Employee::where('status', 'aktif')->pluck('id');
 

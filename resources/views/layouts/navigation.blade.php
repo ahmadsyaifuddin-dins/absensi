@@ -18,8 +18,9 @@
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                         {{ __('Manajemen Pengguna') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')">
-                        {{ __('Laporan Absensi') }}
+                    <x-nav-link :href="route('admin.reports.daily')"
+                        :active="request()->routeIs('admin.reports.daily')">
+                        {{ __('Laporan Harian') }}
                     </x-nav-link>
                     <x-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.*')">
                         {{ __('Hari Libur') }}
@@ -93,7 +94,7 @@
             <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                 {{ __('Manajemen Pengguna') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')">
+            <x-responsive-nav-link :href="route('admin.reports.daily')" :active="request()->routeIs('admin.reports.daily')">
                 {{ __('Laporan Absensi') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.*')">

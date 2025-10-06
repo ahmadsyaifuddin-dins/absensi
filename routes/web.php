@@ -1,13 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\HolidayController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController; // <-- Tambahkan ini di atas
-use App\Http\Controllers\HolidayController;
-use App\Http\Controllers\ReportController;
-
+use App\Http\Controllers\DashboardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -41,15 +40,16 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Rute resource akan otomatis membuat semua URL CRUD untuk UserController
     // Contoh: /users, /users/create, /users/{user}/edit, dll.
     Route::resource('users', UserController::class);
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+
+    // RUTE BARU UNTUK LAPORAN HARIAN
+    Route::get('/admin/reports/daily', [ReportController::class, 'dailyReport'])
+            ->name('admin.reports.daily');
 
     Route::post('/admin/attendance/mark-alpa', [AttendanceController::class, 'markAlpa'])
     ->name('admin.attendance.mark_alpa');
     
-    Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays.index');
-    Route::post('/holidays', [HolidayController::class, 'store'])->name('holidays.store');
-    Route::delete('/holidays/{holiday}', [HolidayController::class, 'destroy'])->name('holidays.destroy');
-
+    Route::resource('/admin/holidays', HolidayController::class)
+    ->except(['show']); // Method 'show' tidak kita gunakan
 });
 
 

@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\Employee;
-use Carbon\Carbon; 
+use App\Models\Holiday;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -188,12 +189,17 @@ class AttendanceController extends Controller
         $today = Carbon::now($timezone)->format('Y-m-d');
         $now = Carbon::now($timezone);
 
+        // Cek apakah hari ini adalah hari libur yang terdaftar di database
+        $isHoliday = Holiday::where('date', $today)->exists();
+
+        if ($isHoliday) {
+            return redirect()->route('dashboard')->with('info', 'Tidak ada tindakan yang diambil karena hari ini adalah hari libur.');
+        }
+
         // 2. Jangan jalankan jika hari libur (Sabtu/Minggu)
         if ($now->isWeekend()) {
             return redirect()->route('dashboard')->with('info', 'Tidak ada tindakan yang diambil pada hari libur.');
         }
-
-        // nanti tambah untuk pengecekan hari libur perusahaan
 
         // 3. Dapatkan semua ID karyawan yang statusnya 'aktif'
         $activeEmployeeIds = Employee::where('status', 'aktif')->pluck('id');

@@ -1,136 +1,244 @@
 @php
+// Logic untuk enable/disable tombol Mark Alpa
 $currentTime = \Carbon\Carbon::now('Asia/Makassar');
 $endOfDay = $currentTime->copy()->setTime(14, 0, 0);
 $isPastOfficeHours = $currentTime->gt($endOfDay);
 @endphp
+
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Admin Dashboard') }}
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Admin Dashboard') }}
+            </h2>
+            <div class="text-sm text-gray-600">
+                <span class="font-medium">{{ \Carbon\Carbon::now('Asia/Makassar')->isoFormat('dddd, D MMMM Y') }}</span>
+                <span class="ml-3">{{ \Carbon\Carbon::now('Asia/Makassar')->format('H:i') }} WITA</span>
+            </div>
+        </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            
+            {{-- 🎉 Success Messages --}}
             @if (session('success'))
-            <div class="mt-4 mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
-                role="alert">
-                <p>{{ session('success') }}</p>
+            <div class="mb-6 bg-green-100 border-l-4 border-green-500 text-green-700 px-4 py-3 rounded-lg shadow-sm animate-pulse" role="alert">
+                <div class="flex">
+                    <span class="text-xl mr-2"></span>
+                    <p>{{ session('success') }}</p>
+                </div>
             </div>
             @endif
+            
+            {{-- ℹ️ Info Messages --}}
             @if (session('info'))
-            <div class="mt-4 mb-4 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative" role="alert">
-                <p>{{ session('info') }}</p>
+            <div class="mb-6 bg-blue-100 border-l-4 border-blue-500 text-blue-700 px-4 py-3 rounded-lg shadow-sm" role="alert">
+                <div class="flex">
+                    <span class="text-xl mr-2"></span>
+                    <p>{{ session('info') }}</p>
+                </div>
             </div>
             @endif
-            {{-- Bagian Statistik Kartu --}}
+
+            {{-- 📊 Bagian Statistik Kartu --}}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                <div class="bg-white p-6 rounded-lg shadow-sm flex items-center space-x-4">
-                    <div class="bg-blue-500 p-3 rounded-full">
-                        <i class="fas fa-users text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Total Karyawan Aktif</p>
-                        <p class="text-2xl font-bold">{{ $totalEmployees }}</p>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-sm flex items-center space-x-4">
-                    <div class="bg-green-500 p-3 rounded-full">
-                        <i class="fas fa-user-check text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Hadir Hari Ini</p>
-                        <p class="text-2xl font-bold">{{ $presentToday }}</p>
+                
+                {{-- Card 1: Total Karyawan --}}
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+                    <div class="flex items-center justify-between">
+                        <div class="text-white">
+                            <p class="text-sm opacity-90 mb-1">Total Karyawan Aktif</p>
+                            <p class="text-4xl font-bold">{{ $totalEmployees }}</p>
+                            <p class="text-xs opacity-75 mt-2">Registered</p>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-4 rounded-full">
+                            <i class="fas fa-users text-white text-3xl"></i>
+                        </div>
                     </div>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow-sm flex items-center space-x-4">
-                    <div class="bg-yellow-500 p-3 rounded-full">
-                        <i class="fas fa-user-clock text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Terlambat Hari Ini</p>
-                        <p class="text-2xl font-bold">{{ $lateToday }}</p>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-sm flex items-center space-x-4">
-                    <div class="bg-orange-500 p-3 rounded-full">
-                        <i class="fas fa-user-times text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Izin / Sakit Hari Ini</p>
-                        <p class="text-2xl font-bold">{{ $onLeaveToday }}</p>
+
+                {{-- Card 2: Hadir Hari Ini --}}
+                <div class="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+                    <div class="flex items-center justify-between">
+                        <div class="text-white">
+                            <p class="text-sm opacity-90 mb-1">Hadir Hari Ini</p>
+                            <p class="text-4xl font-bold">{{ $presentToday }}</p>
+                            <p class="text-xs opacity-75 mt-2">Present</p>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-4 rounded-full">
+                            <i class="fas fa-user-check text-white text-3xl"></i>
+                        </div>
                     </div>
                 </div>
+
+                {{-- Card 3: Terlambat --}}
+                <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+                    <div class="flex items-center justify-between">
+                        <div class="text-white">
+                            <p class="text-sm opacity-90 mb-1">Terlambat Hari Ini</p>
+                            <p class="text-4xl font-bold">{{ $lateToday }}</p>
+                            <p class="text-xs opacity-75 mt-2">Late Arrival</p>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-4 rounded-full">
+                            <i class="fas fa-user-clock text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Card 4: Izin/Sakit --}}
+                <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+                    <div class="flex items-center justify-between">
+                        <div class="text-white">
+                            <p class="text-sm opacity-90 mb-1">Izin / Sakit</p>
+                            <p class="text-4xl font-bold">{{ $onLeaveToday }}</p>
+                            <p class="text-xs opacity-75 mt-2">On Leave</p>
+                        </div>
+                        <div class="bg-white bg-opacity-20 p-4 rounded-full">
+                            <i class="fas fa-user-times text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
-            {{-- Bagian Aktivitas Terbaru & Aksi Cepat --}}
+            {{-- 📋 Bagian Aktivitas Terbaru & Aksi Cepat --}}
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-2 bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-                        <h3 class="text-lg font-semibold mb-4">Aktivitas Absensi Terbaru Hari Ini</h3>
-                        <div class="space-y-4">
+                
+                {{-- 📋 Aktivitas Terbaru (2/3 width) --}}
+                <div class="lg:col-span-2 bg-white overflow-hidden shadow-lg sm:rounded-xl">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-bold text-gray-800 flex items-center">
+                                <span class="text-2xl mr-2"></span>
+                                Aktivitas Absensi Terbaru
+                            </h3>
+                            <span class="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                                Hari Ini
+                            </span>
+                        </div>
+
+                        <div class="space-y-3">
                             @forelse ($recentActivities as $activity)
-                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                <div>
-                                    <p class="font-semibold">{{ $activity->employee->nama_lengkap }}</p>
-                                    <p class="text-sm text-gray-500">
-                                        @if($activity->time_in && $activity->time_out)
-                                        Absen Pulang pada {{ $activity->time_out }}
-                                        @elseif($activity->time_in)
-                                        Absen Masuk pada {{ $activity->time_in }}
-                                        @else
-                                        Mengajukan {{ $activity->status }}
-                                        @endif
-                                    </p>
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg hover:shadow-md transition-shadow border border-gray-200">
+                                <div class="flex items-center space-x-4">
+                                    <div class="bg-indigo-100 p-3 rounded-full">
+                                        <i class="fas fa-user text-indigo-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-gray-900">
+                                            {{ $activity->employee->nama_lengkap }}
+                                        </p>
+                                        <p class="text-sm text-gray-600">
+                                            @if($activity->time_in && $activity->time_out)
+                                                Absen Pulang pada <span class="font-medium">{{ $activity->time_out }}</span>
+                                            @elseif($activity->time_in)
+                                                Absen Masuk pada <span class="font-medium">{{ $activity->time_in }}</span>
+                                            @else
+                                                Mengajukan {{ $activity->status }}
+                                            @endif
+                                        </p>
+                                    </div>
                                 </div>
                                 <div>
-                                    {{-- Badge Status --}}
+                                    {{-- 🎨 Badge Status dengan Warna --}}
                                     @php
-                                    $status = $activity->status;
-                                    $badgeColor = 'bg-red-100 text-red-800'; // Default
-                                    if (str_contains($status, 'Hadir')) $badgeColor = 'bg-green-100 text-green-800';
-                                    elseif (str_contains($status, 'Terlambat')) $badgeColor = 'bg-yellow-100
-                                    text-yellow-800';
-                                    elseif (str_contains($status, 'Izin')) $badgeColor = 'bg-blue-100 text-blue-800';
-                                    elseif (str_contains($status, 'Sakit')) $badgeColor = 'bg-orange-100
-                                    text-orange-800';
+                                        $status = $activity->status;
+                                        $badgeColor = 'bg-gray-100 text-gray-800';
+                                        
+                                        if (str_contains($status, 'Hadir')) 
+                                            $badgeColor = 'bg-green-100 text-green-800 border-green-300';
+                                        elseif (str_contains($status, 'Terlambat')) 
+                                            $badgeColor = 'bg-yellow-100 text-yellow-800 border-yellow-300';
+                                        elseif (str_contains($status, 'Izin')) 
+                                            $badgeColor = 'bg-blue-100 text-blue-800 border-blue-300';
+                                        elseif (str_contains($status, 'Sakit')) 
+                                            $badgeColor = 'bg-orange-100 text-orange-800 border-orange-300';
                                     @endphp
-                                    <span
-                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $badgeColor }}">
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full border {{ $badgeColor }}">
                                         {{ $activity->status }}
                                     </span>
                                 </div>
                             </div>
                             @empty
-                            <p class="text-gray-500">Belum ada aktivitas absensi hari ini.</p>
+                            <div class="flex flex-col items-center py-12">
+                                <span class="text-6xl mb-3"></span>
+                                <p class="text-gray-500 text-lg font-medium">Belum ada aktivitas hari ini</p>
+                                <p class="text-gray-400 text-sm mt-1">Data akan muncul setelah karyawan mulai absen</p>
+                            </div>
                             @endforelse
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-                        <h3 class="text-lg font-semibold mb-4">Aksi Cepat</h3>
+                {{-- ⚡ Aksi Cepat (1/3 width) --}}
+                <div class="bg-white overflow-hidden shadow-lg sm:rounded-xl">
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center">
+                            <span class="text-2xl mr-2"></span>
+                            Aksi Cepat
+                        </h3>
+                        
                         @if ($isPastOfficeHours)
-                        <form action="{{ route('admin.attendance.mark_alpa') }}" method="POST"
-                            onsubmit="return confirm('Apakah Anda yakin ingin menandai semua karyawan yang belum absen sebagai ALPA untuk hari ini? Tindakan ini tidak bisa dibatalkan.');">
-                            @csrf
-                            <button type="submit"
-                                class="w-full bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-lg shadow-md">
-                                <i class="fas fa-user-slash mr-2"></i>
-                                Tandai Karyawan yg Alpa
-                            </button>
-                            <p class="text-xs text-gray-500 mt-2 text-center">
-                                Klik untuk menandai karyawan yang tidak absen hari ini sebagai "Alpa".
-                            </p>
-                        </form>
+                            {{-- Tombol Aktif setelah jam 14:00 --}}
+                            <form action="{{ route('admin.attendance.mark_alpa') }}" 
+                                  method="POST"
+                                  onsubmit="return confirm('Apakah Anda yakin ingin menandai semua karyawan yang belum absen sebagai ALPA untuk hari ini?\n\n❗ Tindakan ini tidak bisa dibatalkan!');">
+                                @csrf
+                                <button type="submit" 
+                                        class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+                                    <i class="fas fa-user-slash mr-2"></i>
+                                    <span class="text-lg">Tandai Alpa</span>
+                                </button>
+                                <p class="text-xs text-gray-500 mt-3 text-center leading-relaxed">
+                                    Klik untuk menandai karyawan yang tidak absen hari ini sebagai "Alpa"
+                                </p>
+                            </form>
                         @else
-                        <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4" role="alert">
-                            <p>Tombol "Proses Karyawan Alpa" akan aktif setelah jam 14:00 WITA.</p>
-                        </div>
+                            {{-- Info Box kalau belum waktunya --}}
+                            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <span class="text-2xl"></span>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h4 class="text-sm font-bold text-blue-800 mb-1">
+                                            Tombol Belum Aktif
+                                        </h4>
+                                        <p class="text-xs text-blue-700 leading-relaxed">
+                                            Tombol "Tandai Alpa" akan aktif setelah <strong>jam 14:00 WITA</strong>.
+                                        </p>
+                                        <div class="mt-3 pt-3 border-t border-blue-200">
+                                            <p class="text-xs text-blue-600">
+                                                Waktu sekarang: <span class="font-semibold">{{ $currentTime->format('H:i') }} WITA</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endif
+
+                        {{-- Quick Stats Mini --}}
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <h4 class="text-sm font-semibold text-gray-700 mb-3">Quick Stats</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Persentase Kehadiran:</span>
+                                    <span class="font-semibold text-green-600">
+                                        {{ $totalEmployees > 0 ? round(($presentToday / $totalEmployees) * 100, 1) : 0 }}%
+                                    </span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Belum Absen:</span>
+                                    <span class="font-semibold text-red-600">
+                                        {{ $totalEmployees - $presentToday - $onLeaveToday }} orang
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
         </div>

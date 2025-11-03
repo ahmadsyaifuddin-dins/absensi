@@ -1,0 +1,44 @@
+public function clockIn(Request $request)
+    {
+        $user = Auth::user();
+        // Pastikan user memiliki relasi employee
+        if (!$user->employee) {
+            return redirect()->route('dashboard')->with('error', 'Data karyawan tidak ditemukan.');
+        }
+
+        $timezone = 'Asia/Makassar'; // WITA
+        $now = Carbon::now($timezone);
+        $today = $now->format('Y-m-d');
+        $time = $now->format('H:i:s');
+
+        // 1. Cek apakah sudah absen masuk hari ini
+        $existingAttendance = Attendance::where('employee_id', $user->employee->id)
+            ->where('date', $today)
+            ->first();
+
+        if ($existingAttendance) {
+            return redirect()->route('dashboard')->with('error', 'Anda sudah melakukan absen masuk hari ini.');
+        }
+
+        // 2. Cek apakah hari ini adalah hari kerja (Senin-Jumat)
+        if ($now->isWeekend()) {
+            return redirect()->route('dashboard')->with('error', 'Absensi hanya bisa dilakukan pada hari kerja.');
+        }
+
+        // 3. Tentukan status (Terlambat atau Hadir)
+        $lateTime = Carbon::createFromTimeString('08:01:00', $timezone);
+        $status = 'Hadir';
+        if ($now->gt($lateTime)) {
+            $status = 'Terlambat';
+        }
+
+        // 4. Simpan data absensi
+        Attendance::create([
+            'employee_id' => $user->employee->id,
+            'date' => $today,
+            'time_in' => $time,
+            'status' => $status,
+        ]);
+
+        return redirect()->route('dashboard')->with('success', 'Berhasil melakukan absen masuk.');
+    }
